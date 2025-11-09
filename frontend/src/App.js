@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 export default function App(){
   const [msg, setMsg] = useState('loading...');
   useEffect(()=> {
-    fetch('http://localhost:5000/api/hello')
+    fetch('http://mernpracticeapp.sytes.net/api/hello')
       .then(r => r.json())
       .then(j => setMsg(j.message))
       .catch(()=> setMsg('Could not reach API'));
