@@ -1,0 +1,71 @@
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy:latest
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./data/certs:/etc/nginx/certs:rw
+      - ./data/vhost.d:/etc/nginx/vhost.d:rw
+      - ./data/html:/usr/share/nginx/html:rw
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  acme:
+    image: nginxproxy/acme-companion:latest
+    container_name: nginx-proxy-acme
+    restart: unless-stopped
+    depends_on:
+      - nginx-proxy
+    volumes:
+      - ./data/certs:/etc/nginx/certs:rw
+      - ./data/vhost.d:/etc/nginx/vhost.d:rw
+      - ./data/html:/usr/share/nginx/html:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+
+  api:
+    build: ./backend
+    container_name: mern_api
+    restart: unless-stopped
+    environment:
+      - PORT=5000
+      - MONGO_URI=${MONGO_URI:-mongodb://mongo:27017/mern}
+      - VIRTUAL_HOST=${API_VIRTUAL_HOST}
+      - LETSENCRYPT_HOST=${API_LETSENCRYPT_HOST}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    expose:
+      - "5000"
+    depends_on:
+      - mongo
+    labels:
+      com.github.actions: "deployed"
+
+  web:
+    build: ./frontend
+    container_name: mern_frontend
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=${WEB_VIRTUAL_HOST}
+      - LETSENCRYPT_HOST=${WEB_LETSENCRYPT_HOST}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    expose:
+      - "80"
+    depends_on:
+      - api
+    labels:
+      com.github.actions: "deployed"
+
+  mongo:
+    image: mongo:latest
+    container_name: mern_mongo
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+volumes:
+  mongo-data:
