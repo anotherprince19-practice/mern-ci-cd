@@ -10,7 +10,7 @@ export default function App(){
   }, []);
   return (
     <div style={{fontFamily:'Arial',padding:20}}>
-      <h1>MERN scaffold (with nginx-proxy & Let's Encrypt)</h1>
+      <h1>MERN scaffold App(with nginx-proxy & Let's Encrypt)</h1>
       <p>{msg}</p>
       <p>Visit <code>/api/health</code> for backend health.</p>
     </div>
