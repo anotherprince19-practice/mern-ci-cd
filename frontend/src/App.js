@@ -13,6 +13,7 @@ export default function App(){
       <h1>MERN scaffold App(with nginx-proxy & Let's Encrypt)</h1>
       <p>{msg}</p>
       <p>Visit <code>/api/health</code> for backend health.</p>
+      <p>This App is brought to you by TK</p>
     </div>
   );
 }
