@@ -19,13 +19,13 @@ jobs:
       - name: Build frontend
         working-directory: ./frontend
         run: |
-          npm ci
+          npm i
           npm run build
 
       - name: Build backend (lint/test placeholder)
         working-directory: ./backend
         run: |
-          npm ci
+          npm i
           echo "no tests"
 
       - name: Copy files to EC2
