@@ -16,18 +16,6 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Build frontend
-        working-directory: ./frontend
-        run: |
-          npm i
-          npm run build
-
-      - name: Build backend (lint/test placeholder)
-        working-directory: ./backend
-        run: |
-          npm i
-          echo "no tests"
-
       - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
